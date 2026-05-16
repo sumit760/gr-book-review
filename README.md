@@ -229,17 +229,44 @@ login(token=HF_TOKEN)
 
 ### 4. Set up W&B tracking
 
-Log in to Weights & Biases:
+Weights & Biases was used for experiment tracking. It helped log training runs, evaluation metrics, loss values, and project details during model training.
 
-```bash
-import wandb
+To connect Kaggle Notebook with W&B, a W&B API key is required.
 
-wandb.login()
+#### Create W&B API key
+
+1. Log in to your Weights & Biases account.
+2. Go to your W&B user settings.
+3. Copy your API key.
+4. In Kaggle Notebook, go to **Add-ons → Secrets**.
+5. Add the W&B API key as a Kaggle Secret using the name:
+
+```text
+WANDB_API_KEY
 ```
 
-Initialize a W&B run:
+#### Load W&B API key from Kaggle Secrets
 
-```bash
+Use the following code in the notebook:
+
+```python
+import os
+import wandb
+from kaggle_secrets import UserSecretsClient
+
+user_secrets = UserSecretsClient()
+
+WANDB_API_KEY = user_secrets.get_secret("WANDB_API_KEY")
+os.environ["WANDB_API_KEY"] = WANDB_API_KEY
+
+wandb.login(key=WANDB_API_KEY)
+```
+
+#### Initialize W&B run
+
+After logging in, initialize the W&B run:
+
+```python
 wandb.init(
     project="mlops-assignment2",
     name="distilroberta-base-goodreads-genres"
